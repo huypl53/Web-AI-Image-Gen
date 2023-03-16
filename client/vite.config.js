@@ -8,9 +8,9 @@ import eslint from 'vite-plugin-eslint';
 export default defineConfig({
 	resolve: {
 		alias: [
-			// { find: '~', replacement: path.resolve(__dirname, './src') },
+			{ find: '~', replacement: path.resolve(__dirname, './src') }
 
-			{ find: '~', replacement: fileURLToPath(new URL('./src', import.meta.url)) }
+			// { find: '~', replacement: fileURLToPath(new URL('./src', import.meta.url)) }
 		]
 	},
 	plugins: [react(), eslint()]

@@ -14,7 +14,7 @@ module.exports = {
 		ecmaVersion: 2017,
 		ecmaFeatures: {
 			experimentalObjectRestSpread: true,
-			jsx: true,
+			// jsx: true,
 			legacyDecorators: true
 		}
 	},
@@ -31,7 +31,6 @@ module.exports = {
 	rules: {
 		'import/extensions': [
 			'error',
-			'ignorePackages',
 			{
 				js: 'warning',
 				jsx: 'warning',
