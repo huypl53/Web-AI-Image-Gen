@@ -179,7 +179,8 @@ module.exports = {
 				'prettier',
 				'plugin:import/recommended',
 				'plugin:import/errors',
-				'plugin:import/warnings'
+				'plugin:import/warnings',
+				'react-app'
 				// "plugin:import/javascript",
 			],
 			parserOptions: {
@@ -223,9 +224,9 @@ module.exports = {
 					node: {
 						extensions: ['.jsx', '.js', '.tsx', '.ts']
 					},
-					javascript: {
-						alwaysTryTypes: true
-					},
+					// javascript: {
+					// 	alwaysTryTypes: true
+					// },
 					'babel-module': { allowExistingDirectories: true }
 				}
 			}
