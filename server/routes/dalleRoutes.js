@@ -21,23 +21,23 @@ router.route('/').get((req, res) => {
 	res.send('hello from dalle');
 });
 
-const _getRandomInt = maxx => Math.floor(Math.random() * maxx);
+const _getRandomInt = maxx => Math.floor(Math.max(0.5, Math.random()) * maxx);
 
 router.route('/').post(async (req, res) => {
 	try {
-		const { prompt } = req.body;
-		// console.log({ prompt });
-		// const { id, output_url } = await deepai.callStandardApi('text2img', {
-		// 	text: prompt
-		// });
+		// const { prompt } = req.body;
 
 		const response = await fetch(`https://picsum.photos/${_getRandomInt(1000)}/${_getRandomInt(1000)}`, { method: 'GET' });
 
 		// console.log({ response });
 		if (!response.ok) throw new Error(`unexpected response ${response.statusText}`);
 		const data = await streamToString(response.body);
+
 		const contentType = response.headers['content-type'];
-		res.status(200).json({ photo: `data:${contentType ? contentType : 'image/png'};base64,${data}` });
+		if (contentType) res.setHeader('content-type', contentType);
+
+		// res.status(200).json({ photo: `data:${contentType ? contentType : 'image/png'};base64,${data}` });
+		res.status(200).json({ photo: `${data}` });
 	} catch (error) {
 		console.error(error);
 		res.status(500).send(error);

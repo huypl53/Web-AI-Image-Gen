@@ -19,7 +19,32 @@ const CreatePost = props => {
 		setForm({ ...form, [e.target.name]: e.target.value });
 	};
 
-	const handleSubmit = () => {};
+	const handleSubmit = async e => {
+		e.preventDefault();
+
+		if (form.prompt && form.photo) {
+			setLoading(true);
+			try {
+				console.log({ form });
+				const response = await fetch('http://localhost:8080/api/v1/post', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(form)
+				});
+
+				await response.json();
+				navigate('/');
+			} catch (error) {
+				alert(error);
+			} finally {
+				setLoading(false);
+			}
+		} else {
+			alert('Please enter a prompt!');
+		}
+	};
 
 	const handleSurpriseMe = () => {
 		const randomPrompt = getRandomPrompt(form.prompt);
@@ -40,7 +65,8 @@ const CreatePost = props => {
 				});
 
 				const data = await response.json();
-				setForm({ ...form, photo: data.photo });
+				const contentType = response.headers['content-type'];
+				setForm({ ...form, photo: `data:${contentType ? contentType : 'image/png'};base64,${data.photo}` });
 			} catch (error) {
 				alert(error);
 			} finally {
@@ -109,7 +135,7 @@ const CreatePost = props => {
 					<button
 						type='submit'
 						className='mt-3 text-white bg-[#6469ff] font-medium rounded-md text-smw-full sm:w-auto px-5 py-2.5 text-center'>
-						{loading ? 'Shareing...' : 'Share with the community'}
+						{loading ? 'Sharing...' : 'Share with the community'}
 					</button>
 				</div>
 			</form>

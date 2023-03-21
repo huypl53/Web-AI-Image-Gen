@@ -11,6 +11,51 @@ const Home = props => {
 	const [loading, setLoading] = React.useState(false);
 	const [allPosts, setAllPosts] = React.useState(null);
 	const [searchText, setSearchText] = React.useState('');
+	const [searchedResults, setSearchedResults] = React.useState(null);
+	const [searchTimeout, setSearchTimeout] = React.useState(null);
+
+	React.useEffect(() => {
+		const fetchPosts = async () => {
+			setLoading(true);
+			try {
+				const response = await fetch('http://localhost:8080/api/v1/post', {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				});
+
+				if (response.ok) {
+					const result = await response.json();
+					// console.log('Effect get: ', result.data);
+					setAllPosts(result.data.reverse());
+				}
+			} catch (error) {
+				console.error(error);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchPosts();
+	}, []);
+
+	const handleSearchChange = e => {
+		clearTimeout(searchTimeout);
+		setSearchText(e.target.value);
+
+		setSearchTimeout(
+			setTimeout(() => {
+				const searchResults = Array.from(allPosts).filter(
+					item =>
+						item.name.toLowerCase().includes(searchText.toLowerCase()) ||
+						item.prompt.toLowerCase().includes(searchText.toLowerCase())
+				);
+
+				setSearchedResults(searchResults);
+			}, searchTimeout)
+		);
+	};
 
 	return (
 		<section className='max-w-7xl mx-auto'>
@@ -21,7 +66,14 @@ const Home = props => {
 				</p>
 			</div>
 			<div className='mt-16'>
-				<FormField />
+				<FormField
+					labelName='Search Posts'
+					type='text'
+					name='text'
+					placeholder='Search posts'
+					value={searchText}
+					handleChange={handleSearchChange}
+				/>
 			</div>
 
 			<div className='mt-10'>
@@ -38,9 +90,9 @@ const Home = props => {
 						)}
 						<div className='grid lg:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1 gap-3'>
 							{searchText ? (
-								<RenderCards data={[]} title='No searh results found' />
+								<RenderCards data={searchedResults} title='No searh results found' />
 							) : (
-								<RenderCards data={[]} title='No posts found' />
+								<RenderCards data={allPosts} title='No posts found' />
 							)}
 						</div>
 					</>
